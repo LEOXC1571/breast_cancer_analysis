@@ -26,30 +26,66 @@ def plot_explained_var_ratio(ratio, saved=False):
     plt.show()
     pass
 
-def plot_2D_pca_analysis(feat2d, target, saved=False):
-    plt.figure(figsize=(8, 8))
-    plt.scatter(feat2d[:, 0], feat2d[:, 1], c=target, cmap='plasma')
+def plot_pca_analysis(feat, target, saved=False):
+    plt.figure(figsize=(12, 7))
+    ax1 = plt.subplot(121)
+    ax1.scatter(feat[:, 0], feat[:, 1], c=target, cmap='plasma')
     for ii in np.arange(569):
-        plt.text(feat2d[ii, 0], feat2d[ii, 1], s=None)
-    plt.xlabel('PC1')
-    plt.ylabel('PC2')
-    plt.title('Samples in 2D space')
+        plt.text(feat[ii, 0], feat[ii, 1], s=None)
+    ax1.set_xlabel('PC1')
+    ax1.set_ylabel('PC2')
+    ax1.set_title('Samples in 2D space')
+    ax2 = plt.subplot(122, projection='3d')
+    ax2.scatter(feat[:, 0], feat[:, 1], feat[:, 2], c=target, cmap='plasma')
+    # 视角转换，转换后更易看出簇群
+    ax2.view_init(30, 45)
+    ax2.set_xlabel('PC1')
+    ax2.set_ylabel('PC2')
+    ax2.set_zlabel('PC3')
+    ax2.set_title('Samples in 3D space')
     if saved:
-        plt.savefig('outputs/pca_samples_2d.png')
+        plt.savefig('outputs/pca_samples_2&3d.png')
     plt.show()
     pass
 
-def plot_3D_pca_analysis(feat3d, target, saved=False):
-    plt.figure(figsize=(8, 8))
-    ax = plt.subplot(111, projection='3d')
-    ax.scatter(feat3d[:, 0], feat3d[:, 1], feat3d[:, 2], c=target, cmap='plasma')
-    # 视角转换，转换后更易看出簇群
-    ax.view_init(30, 45)
-    ax.set_xlabel('PC1')
-    ax.set_ylabel('PC2')
-    ax.set_zlabel('PC3')
-    plt.title('Samples in 3D space')
+def plot_kpca_analysis(feat, target, saved=False):
+    plt.figure(figsize=(12, 7))
+    ax1 = plt.subplot(121)
+    ax1.scatter(feat[:, 0], feat[:, 1], c=target, cmap='coolwarm')
+    for ii in np.arange(569):
+        plt.text(feat[ii, 0], feat[ii, 1], s=None)
+    ax1.set_xlabel('PC1')
+    ax1.set_ylabel('PC2')
+    ax1.set_title('Samples in 2D space')
+    ax2 = plt.subplot(122, projection='3d')
+    ax2.scatter(feat[:, 0], feat[:, 1], feat[:, 2], c=target, cmap='coolwarm')
+    ax2.view_init(30, 45)
+    ax2.set_xlabel('PC1')
+    ax2.set_ylabel('PC2')
+    ax2.set_zlabel('PC3')
+    ax2.set_title('Samples in 3D space')
     if saved:
-        plt.savefig('outputs/pca_samples_3d.png')
+        plt.savefig('outputs/kpca_samples_2&3d.png')
+    plt.show()
+    pass
+
+def plot_lle_analysis(feat2d, feat3d, target, saved=False):
+    plt.figure(figsize=(12, 7))
+    ax1 = plt.subplot(121)
+    ax1.scatter(feat2d[:, 0], feat2d[:, 1], c=target, cmap='coolwarm')
+    for ii in np.arange(569):
+        plt.text(feat2d[ii, 0], feat2d[ii, 1], s=None)
+    ax1.set_xlabel('PC1')
+    ax1.set_ylabel('PC2')
+    ax1.set_title('Samples in 2D space')
+    ax2 = plt.subplot(122, projection='3d')
+    ax2.scatter(feat3d[:, 0], feat3d[:, 1], feat3d[:, 2], c=target, cmap='coolwarm')
+    ax2.view_init(30, 45)
+    ax2.set_xlabel('PC1')
+    ax2.set_ylabel('PC2')
+    ax2.set_zlabel('PC3')
+    ax2.set_title('Samples in 3D space')
+    if saved:
+        plt.savefig('outputs/lle_samples_2&3d.png')
     plt.show()
     pass

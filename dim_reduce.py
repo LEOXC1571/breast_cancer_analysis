@@ -37,7 +37,7 @@ data_std = preprocessing.StandardScaler().fit_transform(data)
 
 # perform pca analysis on breast cancer data（99.99%）
 
-pca_analysis(CURRENT_PATH, data_std, target, saved=True)
-
-
+# pca_analysis(CURRENT_PATH, data_std, target, saved=True)
+# kpca_analysis(CURRENT_PATH, data_std, target, saved=False)
+lle_analysis(CURRENT_PATH, data_std, target, saved=False)
 print(data)
