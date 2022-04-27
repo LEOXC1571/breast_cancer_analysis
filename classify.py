@@ -14,10 +14,11 @@ from sklearn.model_selection import KFold
 import numpy as np
 import pandas as pd
 
+
 #read data
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__))
 DIM_REDUCE_MODEL = 'LLE'
-feat_data = pd.read_csv(os.path.join(CURRENT_PATH, 'outputs/pca_feat.csv'), header=0)
+feat_data = pd.read_csv(os.path.join(CURRENT_PATH, 'outputs/kpca_feat.csv'), header=0)
 feat_data = np.array(feat_data)
 breast_cancer_data = datasets.load_breast_cancer()
 origin_data = breast_cancer_data['data']
@@ -30,7 +31,7 @@ for train_idx, test_idx in kf.split(use_data):
     x_train, x_test = use_data[train_idx], use_data[test_idx]
     y_train, y_test = target[train_idx], target[test_idx]
 
-    clf_linear = svm.SVC(C=0.5, kernel='linear', degree=3, gamma='auto')
+    clf_linear = svm.SVC(C=0.4, kernel='linear', degree=3, gamma='auto')
     clf_linear.fit(x_train, y_train)
 
     # calc train accuracy

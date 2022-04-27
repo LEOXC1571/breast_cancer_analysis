@@ -112,7 +112,7 @@ def lle_analysis(path, data, target, saved=False):
     print(grid_search.best_params_)
 
     best_param = grid_search.best_params_
-    opt_lle = manifold.LocallyLinearEmbedding(n_components=best_param['lle__n_components'], n_neighbors=best_param['lle_n_neighbors'],
+    opt_lle = manifold.LocallyLinearEmbedding(n_components=best_param['lle__n_components'], n_neighbors=best_param['lle_n__neighbors'],
                                               method=best_param['lle__method'], eigen_solver='auto')
     lle_feat = opt_lle.fit_transform(data)
 
