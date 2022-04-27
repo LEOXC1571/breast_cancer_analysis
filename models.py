@@ -78,10 +78,18 @@ def kpca_analysis(path, data, target, saved=False):
     pass
 
 def lle_analysis(path, data, target, saved=False):
-    n_neighbor_list = 100
-    LLE2 = manifold.LocallyLinearEmbedding(n_components=2, n_neighbors=n_neighbor_list, method='standard', eigen_solver='auto').fit_transform(data)
-    LLE3 = manifold.LocallyLinearEmbedding(n_components=3, n_neighbors=n_neighbor_list, method='standard', eigen_solver='auto').fit_transform(data)
-    plot_lle_analysis(LLE2, LLE3, target, saved)
+    n_neighbor_list = [2, 5, 10, 20, 50, 100]
+    for i in n_neighbor_list:
+        LLE2 = manifold.LocallyLinearEmbedding(n_components=2, n_neighbors=i, method='standard', eigen_solver='auto').fit_transform(data)
+        LLE3 = manifold.LocallyLinearEmbedding(n_components=3, n_neighbors=i, method='standard', eigen_solver='auto').fit_transform(data)
+        plot_lle_analysis(LLE2, LLE3, target, i, saved)
+
+        if saved:
+            pd_LLE2 = pd.DataFrame(LLE2)
+            pd_LLE3 = pd.DataFrame(LLE3)
+            pd_LLE2.to_csv(os.path.join(path, 'outputs/lle_' + str(i) + '_feat2d.csv'))
+            pd_LLE3.to_csv(os.path.join(path, 'outputs/lle_' + str(i) + '_feat3d.csv'))
+
     #
     # fig = plt.figure(figsize=(15, 8))
     # fig.suptitle("Manifold Learning with %i points, %i neighbors"
