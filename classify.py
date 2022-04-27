@@ -14,79 +14,35 @@ from sklearn.model_selection import KFold
 import numpy as np
 import pandas as pd
 
+#read data
 CURRENT_PATH = os.path.dirname(os.path.realpath(__file__))
-feat_data = pd.read_csv(os.path.join(CURRENT_PATH, 'outputs/lle_10_feat2d.csv'))
+DIM_REDUCE_MODEL = 'LLE'
+feat_data = pd.read_csv(os.path.join(CURRENT_PATH, 'outputs/pca_feat.csv'), header=0)
+feat_data = np.array(feat_data)
 breast_cancer_data = datasets.load_breast_cancer()
-
-# print basic information
-print(breast_cancer_data['DESCR'])
-
-data = breast_cancer_data['data']
+origin_data = breast_cancer_data['data']
 target = breast_cancer_data['target']
-feat = breast_cancer_data['feature_names']
 
+# use kfold to prevent overfitting
+use_data = feat_data
+kf = KFold(n_splits=5, shuffle=True, random_state=2022)
+for train_idx, test_idx in kf.split(use_data):
+    x_train, x_test = use_data[train_idx], use_data[test_idx]
+    y_train, y_test = target[train_idx], target[test_idx]
 
-decision_train = []
-predict_train = []
-readdata = np.load('./dataset/dataset.npy')
-testdata = np.loadtxt('./dataset/test.txt', delimiter=':')
-# print(testdata)
-x, y = np.split(readdata, (4,), axis=1)
-# testx=np.split(testdata,(1,),axis=1)
-# print(testx)
-# print(x)
-# print(y)
-# x_train, x_test, y_train, y_test = sklearn.model_selection.train_test_split(x, y, random_state=1, train_size=0.8)
+    clf_linear = svm.SVC(C=0.5, kernel='linear', degree=3, gamma='auto')
+    clf_linear.fit(x_train, y_train)
 
-# KFold
-kf = KFold(n_splits=5, shuffle=True)
+    # calc train accuracy
+    y_train_pre = clf_linear.predict(x_train)
+    train_acc = sklearn.metrics.accuracy_score(y_train_pre, y_train)
+    print('Training Set Accuracy of linear kernel is: %f'%train_acc)
 
-# print(kf.get_n_splits(x,y))
+    # calc test accuracy
+    y_test_pre = clf_linear.predict(x_test)
+    test_acc = sklearn.metrics.accuracy_score(y_test_pre, y_test)
+    print('Test Set Accuracy of linear kernel is: %f'%test_acc)
 
-# for gamma in np.arange(0.1,10,0.1):
-
-for train_index, test_index in kf.split(x):
-    # print('train_index', train_index, 'test_index', test_index)
-    x_train, x_test = x[train_index], x[test_index]
-    y_train, y_test = y[train_index], y[test_index]
-    # print(x_train,x_test)
-
-    # clf svm
-    # for c in np.arange(0.1,0.5,0.1):
-    #     for gamma in np.arange(1,10,1):
-    clf = svm.SVC(C=1, kernel='rbf', gamma=0.0001, decision_function_shape='ovo')
-    # clf=svm.LinearSVC(C=0.8, multi_class='ovr')
-    clf.fit(x_train, y_train.ravel())
-    # print(clf.score(x_train, y_train))
-    y_that = clf.predict(x_train)
-    tracc = sklearn.metrics.accuracy_score(y_that, y_train)
-    print('Training Set Accuracy When gamma=', 'C=', 'is', tracc)
-    # print(clf.score(x_test, y_test))
-    y_testhat = clf.predict(x_test)
-    teacc = sklearn.metrics.accuracy_score(y_testhat, y_test)
-    print('Test Set Accuracy When gamma=', 'C=', 'is', teacc)
-
-    # y_testdata = clf.predict(testdata)
-    # print(y_testdata)
-    #
-    # decision_train = clf.decision_function(x_train)
-    # predict_train = clf.predict(x_train)
-    #
-    # print('decision_function:\n', clf.decision_function(x_train))
-    # print('\npredict:\n', clf.predict(x_train))
-testdata = np.loadtxt('./dataset/test.txt', delimiter=':')
-y_testdata = clf.predict(testdata)
-print(y_testdata)
-joblib.dump(clf, 'svm.m')
-
-'''#clf
-clf=svm.SVC(C=0.8,kernel='rbf',gamma=10,decision_function_shape='ovo')
-clf.fit(x_train,y_train.ravel())
-print(clf.score(x_train,y_train))
-y_that=clf.predict(x_train)
-tracc=sklearn.metrics.accuracy_score(y_that,y_train)
-print('Training Set Accuracy',tracc)
-print(clf.score(x_test,y_test))
-y_testhat=clf.predict(x_test)
-teacc=sklearn.metrics.accuracy_score(y_testhat,y_test)
-print('Test Set Accuracy',teacc)'''
+    # calc score
+    linear_score = clf_linear.score(x_test, y_test)
+    print('The score of linear kernel is: %f'%linear_score)
