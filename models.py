@@ -19,6 +19,12 @@ from sklearn.decomposition import PCA, KernelPCA
 
 from plot import *
 
+def save_param(model_name, dict):
+    if isinstance(dict, str):
+        dict = eval(dict)
+    with open('outputs/' + model_name+ '_param.txt', 'w', encoding='utf-8') as f:
+        f.write(str(dict))
+
 def pca_analysis(path, data, target, saved=False):
     # perform pca analysis on breast cancer data（99.99%）
     pca = PCA(n_components=0.9999)
@@ -83,9 +89,7 @@ def kpca_analysis(path, data, target, saved=False):
 
     # output pca features
     if saved:
-        param_json = json.dumps(best_param, sort_keys=False, indent=4, separators=(',', ': '))
-        f = open('kpca_best_params.json', 'w')
-        f.write(param_json)
+        save_param('kpca', best_param)
         pd_kpca_feat = pd.DataFrame(kpca_feat)
         pd_kpca_feat.to_csv(os.path.join(path, 'outputs/kpca_feat.csv'))
     pass
@@ -113,9 +117,7 @@ def lle_analysis(path, data, target, saved=False):
     lle_feat = opt_lle.fit_transform(data)
 
     if saved:
-        param_json = json.dumps(best_param, sort_keys=False, indent=4, separators=(',', ': '))
-        f = open('lle_best_params.json', 'w')
-        f.write(param_json)
+        save_param('lle', best_param)
         pd_lle_feat = pd.DataFrame(lle_feat)
         pd_lle_feat.to_csv(os.path.join(path, 'outputs/lle_feat.csv'))
     # n_neighbor_list = [2, 5, 10, 20, 50, 100]
