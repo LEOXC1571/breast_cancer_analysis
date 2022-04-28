@@ -33,6 +33,6 @@ feat = breast_cancer_data['feature_names']
 data_std = preprocessing.StandardScaler().fit_transform(data)
 
 # perform dim reduction analysis
-# pca_analysis(CURRENT_PATH, data_std, target, saved=True)
-# kpca_analysis(CURRENT_PATH, data_std, target, saved=True)
+pca_analysis(CURRENT_PATH, data_std, target, saved=True)
+kpca_analysis(CURRENT_PATH, data_std, target, saved=True)
 lle_analysis(CURRENT_PATH, data_std, target, saved=True)

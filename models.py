@@ -42,8 +42,8 @@ def pca_analysis(path, data, target, saved=False):
     plot_explained_var_ratio(ratio, saved)
 
     # PCA选择降维保留3个主要成分
-    pca_c3 = PCA(n_components=3)
-    feat3 = pca_c3.fit_transform(data)
+    pca_c6 = PCA(n_components=6)
+    feat3 = pca_c6.fit_transform(data)
 
     # print(sum(pca.explained_variance_ratio_))
     # factor_load = pca.components_.T * np.sqrt(pca.explained_variance_)
@@ -55,7 +55,7 @@ def pca_analysis(path, data, target, saved=False):
 
     # output pca features
     if saved:
-        pd_pca_feat = pd.DataFrame(pca_feat)
+        pd_pca_feat = pd.DataFrame(feat3)
         pd_pca_feat.to_csv(os.path.join(path, 'outputs/pca_feat.csv'))
         factor_load = pca.components_.T * np.sqrt(pca.explained_variance_)
         factor_load = pd.DataFrame(factor_load)
@@ -64,24 +64,24 @@ def pca_analysis(path, data, target, saved=False):
 
 def kpca_analysis(path, data, target, saved=False):
     # perform pca analysis on breast cancer data（99.99%）
-    clf = Pipeline([
-        ('kpca', KernelPCA()),
-        ('svm', svm.SVC(degree=3, gamma='auto'))
-    ])
-    param_grid = [{
-        'kpca__n_components': [3, 4, 5, 6, 7, 8, 9, 10],
-        'kpca__gamma': np.linspace(0.003, 0.03, 10),
-        'kpca__kernel': ['linear', 'rbf', 'poly', 'sigmoid', 'cosine'],
-        'svm__C': [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
-        'svm__kernel': ['linear', 'rbf', 'poly', 'sigmoid']
-    }]
+    # clf = Pipeline([
+    #     ('kpca', KernelPCA()),
+    #     ('svm', svm.SVC(degree=3, gamma='auto'))
+    # ])
+    # param_grid = [{
+    #     'kpca__n_components': [3, 4, 5, 6, 7, 8, 9, 10],
+    #     'kpca__gamma': np.linspace(0.003, 0.03, 10),
+    #     'kpca__kernel': ['linear', 'rbf', 'poly', 'sigmoid', 'cosine'],
+    #     'svm__C': [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
+    #     'svm__kernel': ['linear', 'rbf', 'poly', 'sigmoid']
+    # }]
+    #
+    # grid_search = GridSearchCV(clf, param_grid, cv=5)
+    # grid_search.fit(data, target)
+    # print(grid_search.best_params_)
 
-    grid_search = GridSearchCV(clf, param_grid, cv=5)
-    grid_search.fit(data, target)
-    print(grid_search.best_params_)
-
-    best_param = grid_search.best_params_
-    opt_kpca = KernelPCA(n_components=best_param['kpca__n_components'], kernel=best_param['kpca__kernel'], gamma=best_param['kpca__gamma'])
+    # best_param = grid_search.best_params_
+    opt_kpca = KernelPCA(n_components=9, kernel='linear', gamma=0.003)
     kpca_feat = opt_kpca.fit_transform(data)
 
     # 作出样本点在二维和三维空间上的分布
@@ -89,47 +89,43 @@ def kpca_analysis(path, data, target, saved=False):
 
     # output pca features
     if saved:
-        save_param('kpca', best_param)
+        # save_param('kpca', best_param)
         pd_kpca_feat = pd.DataFrame(kpca_feat)
         pd_kpca_feat.to_csv(os.path.join(path, 'outputs/kpca_feat.csv'))
     pass
 
 def lle_analysis(path, data, target, saved=False):
-    clf = Pipeline([
-        ('lle', manifold.LocallyLinearEmbedding()),
-        ('svm', svm.SVC(degree=3, gamma='auto'))
-    ])
-    param_grid = [{
-        'lle__n_components': [2, 3, 4, 5, 6, 7, 8, 9, 10],
-        'lle__n_neighbors': [3, 5, 7, 10, 20, 30, 50, 100],
-        'lle__method': ['standard', 'hessian', 'modified', 'ltsa'],
-        'svm__C': [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
-        'svm__kernel': ['linear', 'rbf', 'poly', 'sigmoid']
-    }]
+    # clf = Pipeline([
+    #     ('lle', manifold.LocallyLinearEmbedding()),
+    #     ('svm', svm.SVC(degree=3, gamma='auto'))
+    # ])
+    # param_grid = [{
+    #     'lle__n_components': [2, 3, 4, 5, 6, 7, 8, 9, 10],
+    #     'lle__n_neighbors': [3, 5, 7, 10, 20, 30, 50, 100],
+    #     'lle__method': ['standard', 'hessian', 'modified', 'ltsa'],
+    #     'svm__C': [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
+    #     'svm__kernel': ['linear', 'rbf', 'poly', 'sigmoid']
+    # }]
+    #
+    # grid_search = GridSearchCV(clf, param_grid, cv=5)
+    # grid_search.fit(data, target)
+    # print(grid_search.best_params_)
+    #
+    # best_param = grid_search.best_params_
+    # opt_lle = manifold.LocallyLinearEmbedding(n_components=best_param['lle__n_components'], n_neighbors=best_param['lle_n__neighbors'],
+    #                                           method=best_param['lle__method'], eigen_solver='auto')
+    # lle_feat = opt_lle.fit_transform(data)
 
-    grid_search = GridSearchCV(clf, param_grid, cv=5)
-    grid_search.fit(data, target)
-    print(grid_search.best_params_)
+    # if saved:
+    #     save_param('lle', best_param)
+    #     pd_lle_feat = pd.DataFrame(lle_feat)
+    #     pd_lle_feat.to_csv(os.path.join(path, 'outputs/lle_feat.csv'))
 
-    best_param = grid_search.best_params_
-    opt_lle = manifold.LocallyLinearEmbedding(n_components=best_param['lle__n_components'], n_neighbors=best_param['lle_n__neighbors'],
-                                              method=best_param['lle__method'], eigen_solver='auto')
-    lle_feat = opt_lle.fit_transform(data)
+    LLE_opt = manifold.LocallyLinearEmbedding(n_components=8, n_neighbors=3, method='standard', eigen_solver='auto').fit_transform(data)
+    plot_lle_analysis(LLE_opt, target, 3, saved)
 
     if saved:
-        save_param('lle', best_param)
-        pd_lle_feat = pd.DataFrame(lle_feat)
-        pd_lle_feat.to_csv(os.path.join(path, 'outputs/lle_feat.csv'))
-    # n_neighbor_list = [2, 5, 10, 20, 50, 100]
-    # for i in n_neighbor_list:
-    #     LLE2 = manifold.LocallyLinearEmbedding(n_components=2, n_neighbors=i, method='standard', eigen_solver='auto').fit_transform(data)
-    #     LLE3 = manifold.LocallyLinearEmbedding(n_components=3, n_neighbors=i, method='standard', eigen_solver='auto').fit_transform(data)
-    #     plot_lle_analysis(LLE2, LLE3, target, i, saved)
-    #
-    #     if saved:
-    #         pd_LLE2 = pd.DataFrame(LLE2)
-    #         pd_LLE3 = pd.DataFrame(LLE3)
-    #         pd_LLE2.to_csv(os.path.join(path, 'outputs/lle_' + str(i) + '_feat2d.csv'))
-    #         pd_LLE3.to_csv(os.path.join(path, 'outputs/lle_' + str(i) + '_feat3d.csv'))
+        pd_LLE = pd.DataFrame(LLE_opt)
+        pd_LLE.to_csv(os.path.join(path, 'outputs/lle_feat.csv'))
 
     pass
