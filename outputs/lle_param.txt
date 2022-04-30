@@ -1,4 +1,7 @@
-{'kpca__gamma': 0.003, 'kpca__kernel': 'linear', 'kpca__n_components': 9, 'svm__C': 0.4, 'svm__kernel': 'linear'}
 {'lle__method': 'standard', 'lle__n_components': 7, 'lle__n_neighbors': 3, 'svm__C': 0.9, 'svm__kernel': 'linear'}
 
 {'lle__method': 'standard', 'lle__n_components': 8, 'lle__n_neighbors': 3, 'svm__C': 0.9, 'svm__kernel': 'linear'}
+
+{'lle__method': 'standard', 'lle__n_components': 2, 'lle__n_neighbors': 3, 'svm__C': 0.9, 'svm__kernel': 'linear'}
+
+{'lle__method': 'standard', 'lle__n_components': 3, 'lle__n_neighbors': 3, 'svm__C': 0.9, 'svm__kernel': 'linear'}

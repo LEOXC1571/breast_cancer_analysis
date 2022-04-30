@@ -12,6 +12,7 @@ from sklearn import svm
 from sklearn import datasets
 from sklearn.model_selection import KFold
 import numpy as np
+from numpy import *
 import pandas as pd
 
 
@@ -52,6 +53,6 @@ for train_idx, test_idx in kf.split(use_data):
     score_list.append(linear_score)
 
 
-print('Training Set Accuracy of linear kernel is: ', train_acc_ls)
-print('Test Set Accuracy of linear kernel is: ', test_acc_ls)
-print('The score of linear kernel is: ', score_list)
+print('Training Set Accuracy of linear kernel is: ', mean(train_acc_ls))
+print('Test Set Accuracy of linear kernel is: ', mean(test_acc_ls))
+print('The score of linear kernel is: ', mean(score_list))

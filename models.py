@@ -73,7 +73,7 @@ def kpca_analysis(path, data, target, saved=False):
     #     'kpca__gamma': np.linspace(0.003, 0.03, 10),
     #     'kpca__kernel': ['linear', 'rbf', 'poly', 'sigmoid', 'cosine'],
     #     'svm__C': [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
-    #     'svm__kernel': ['linear', 'rbf', 'poly', 'sigmoid']
+    #     'svm__kernel': ['linear']
     # }]
     #
     # grid_search = GridSearchCV(clf, param_grid, cv=5)
@@ -81,11 +81,12 @@ def kpca_analysis(path, data, target, saved=False):
     # print(grid_search.best_params_)
 
     # best_param = grid_search.best_params_
-    opt_kpca = KernelPCA(n_components=9, kernel='linear', gamma=0.003)
+    ker = 'cosine'
+    opt_kpca = KernelPCA(n_components=9, kernel=ker, gamma=0.003)
     kpca_feat = opt_kpca.fit_transform(data)
 
     # 作出样本点在二维和三维空间上的分布
-    plot_kpca_analysis(kpca_feat, target, saved)
+    plot_kpca_analysis(kpca_feat, target, ker, saved)
 
     # output pca features
     if saved:
@@ -100,11 +101,11 @@ def lle_analysis(path, data, target, saved=False):
     #     ('svm', svm.SVC(degree=3, gamma='auto'))
     # ])
     # param_grid = [{
-    #     'lle__n_components': [2, 3, 4, 5, 6, 7, 8, 9, 10],
+    #     'lle__n_components': [3],
     #     'lle__n_neighbors': [3, 5, 7, 10, 20, 30, 50, 100],
-    #     'lle__method': ['standard', 'hessian', 'modified', 'ltsa'],
+    #     'lle__method': ['standard', 'modified'],
     #     'svm__C': [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9],
-    #     'svm__kernel': ['linear', 'rbf', 'poly', 'sigmoid']
+    #     'svm__kernel': ['linear']
     # }]
     #
     # grid_search = GridSearchCV(clf, param_grid, cv=5)
@@ -115,17 +116,24 @@ def lle_analysis(path, data, target, saved=False):
     # opt_lle = manifold.LocallyLinearEmbedding(n_components=best_param['lle__n_components'], n_neighbors=best_param['lle_n__neighbors'],
     #                                           method=best_param['lle__method'], eigen_solver='auto')
     # lle_feat = opt_lle.fit_transform(data)
-
+    #
     # if saved:
     #     save_param('lle', best_param)
     #     pd_lle_feat = pd.DataFrame(lle_feat)
     #     pd_lle_feat.to_csv(os.path.join(path, 'outputs/lle_feat.csv'))
+    ls = [2, 3, 5, 7, 10, 20, 30, 50, 100]
+    for i in ls:
+        LLE_opt = manifold.LocallyLinearEmbedding(n_components=8, n_neighbors=i, method='standard',
+                                              eigen_solver='auto').fit_transform(data)
+        plot_lle_analysis(LLE_opt, target, i, saved)
+    # LLE_opt2 = manifold.LocallyLinearEmbedding(n_components=2, n_neighbors=3, method='standard',
+    #                                           eigen_solver='auto').fit_transform(data)
+    # LLE_opt3 = manifold.LocallyLinearEmbedding(n_components=3, n_neighbors=3, method='standard',
+    #                                           eigen_solver='auto').fit_transform(data)
+    # plot_lle23_analysis(LLE_opt2, LLE_opt3, target, 3, saved)
 
-    LLE_opt = manifold.LocallyLinearEmbedding(n_components=8, n_neighbors=3, method='standard', eigen_solver='auto').fit_transform(data)
-    plot_lle_analysis(LLE_opt, target, 3, saved)
-
-    if saved:
-        pd_LLE = pd.DataFrame(LLE_opt)
-        pd_LLE.to_csv(os.path.join(path, 'outputs/lle_feat.csv'))
+    # if saved:
+    #     pd_LLE = pd.DataFrame(LLE_opt)
+    #     pd_LLE.to_csv(os.path.join(path, 'outputs/lle_feat.csv'))
 
     pass
